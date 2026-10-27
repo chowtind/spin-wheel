@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>spin-wheel.js — zero-dependency wheel spinner demo</title>
+<meta name="description" content="Live demo of spin-wheel.js: a zero-dependency canvas wheel spinner with crypto-fair picking and composite-only rotation.">
+<link rel="stylesheet" href="../dist/spin-wheel.css">
+<style>
+    body {
+        margin: 0; padding: 28px 20px 60px;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        background: #f7f9fc; color: #2c3242;
+    }
+    .wrap { max-width: 1160px; margin: 0 auto; }
+    h1 { font-size: 1.6rem; margin: 0 0 4px; }
+    .sub { color: #5f6b7e; margin: 0 0 28px; font-size: .95rem; }
+    .sub a { color: #5a44d6; }
+    .sec { margin-top: 44px; }
+    .sec h2 { font-size: 1.12rem; margin: 0 0 6px; }
+    .sec p { color: #5f6b7e; font-size: .88rem; margin: 0 0 14px; }
+    pre { background: #fff; border: 1px solid #e5eaf2; border-radius: 12px; padding: 12px 16px; overflow: auto; font-size: .82rem; }
+    footer { margin-top: 56px; padding-top: 18px; border-top: 1px dashed #e5eaf2; color: #5f6b7e; font-size: .85rem; }
+    footer a { color: #5a44d6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1>spin-wheel.js</h1>
+    <p class="sub">
+        Zero-dependency canvas wheel spinner. Crypto-fair, result-first picking;
+        composite-only rotation; zero idle CPU.
+        <a href="https://github.com/chowtind/spin-wheel">Source &amp; docs on GitHub</a>
+    </p>
+
+    <div class="sec">
+        <h2>Full layout (wheel + entries editor + history)</h2>
+        <p>Everything wired: add/remove entries, shuffle, sort, eliminate mode, sound, shareable links (the wheel travels inside the URL hash), fullscreen, results log. Press Space or click the wheel.</p>
+        <div id="demo-full"></div>
+        <pre>new SpinWheel('#demo-full', {
+  entries: ['Alice', 'Bob', 'Carol', 'Dave', 'Eve', 'Frank'],
+  eliminate: false,
+});</pre>
+    </div>
+
+    <div class="sec">
+        <h2>Wheel-only layout, driven by API</h2>
+        <p>No built-in editor — you own the entry list and call the API. Winner is reported via <code>onSpinEnd</code>.</p>
+        <div id="demo-bare" style="display:flex; gap:28px; align-items:center; flex-wrap:wrap;"></div>
+        <pre>const wheel = new SpinWheel('#demo-bare', {
+  layout: 'wheel',
+  entries: myEntries,
+  onSpinEnd: ({ index, name }) => showResult(name),
+});</pre>
+    </div>
+
+    <footer>
+        Used in production on
+        <a href="https://spinwheelofnames.app">spinwheelofnames.app</a> (name picker, 34 languages) and
+        <a href="https://wheelpick.io">wheelpick.io</a> (wheel &amp; random-picker tools).
+        MIT licensed.
+    </footer>
+</div>
+
+<script src="../dist/spin-wheel.js"></script>
+<script>
+    /* 1. full layout */
+    new SpinWheel('#demo-full', {
+        entries: ['Alice', 'Bob', 'Carol', 'Dave', 'Eve', 'Frank', 'Grace', 'Henry'],
+        persist: null,   /* demo: don't fight the share hash */
+    });
+
+    /* 2. wheel-only layout, API-driven */
+    const fruits = ['Apple', 'Banana', 'Cherry', 'Durian', 'Elderberry', 'Fig', 'Grape', 'Kiwi'];
+    const wheel = new SpinWheel(document.getElementById('demo-bare'), {
+        layout: 'wheel',
+        entries: fruits,
+        persist: null,
+        shareUrl: false,
+        onSpinEnd: ({ name }) => {
+            const out = document.getElementById('fruit-out');
+            if (out) out.textContent = name;
+        },
+    });
+
+    /* tiny host-side controls to show the API surface */
+    const panel = document.createElement('div');
+    panel.style.cssText = 'display:flex;flex-direction:column;gap:10px;min-width:210px';
+    panel.innerHTML =
+        '<button type="button" style="padding:12px;border:0;border-radius:12px;background:#7059e6;color:#fff;font-weight:600;letter-spacing:.1em;cursor:pointer">SPIN</button>'
+        + '<button type="button" style="padding:9px;border:1.5px solid #e5eaf2;border-radius:999px;background:#fff;cursor:pointer;font-weight:700;font-size:.8rem">SHUFFLE</button>'
+        + '<p style="margin:0;font-size:.86rem;color:#5f6b7e">Last winner: <strong id="fruit-out" style="color:#2c3242">—</strong></p>';
+    panel.querySelector('button').addEventListener('click', () => wheel.spin());
+    panel.querySelectorAll('button')[1].addEventListener('click', () => wheel.shuffle());
+    document.getElementById('demo-bare').appendChild(panel);
+</script>
+</body>
+</html>

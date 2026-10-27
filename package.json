@@ -1,0 +1,41 @@
+{
+  "name": "spin-wheel-js",
+  "version": "1.0.0",
+  "description": "Zero-dependency canvas wheel spinner — crypto-fair result-first picking, composite-only rotation (WAAPI), zero idle CPU",
+  "main": "dist/spin-wheel.js",
+  "module": "src/spin-wheel.js",
+  "style": "dist/spin-wheel.css",
+  "files": [
+    "src",
+    "dist",
+    "demo",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "keywords": [
+    "spin-wheel",
+    "wheel-spinner",
+    "random-picker",
+    "name-picker",
+    "raffle",
+    "giveaway",
+    "canvas",
+    "waapi",
+    "no-dependencies",
+    "zero-dependency",
+    "i18n"
+  ],
+  "license": "MIT",
+  "author": "chowtind",
+  "homepage": "https://github.com/chowtind/spin-wheel",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chowtind/spin-wheel.git"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
